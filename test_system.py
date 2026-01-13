@@ -71,7 +71,8 @@ except Exception as e:
 # Test 2: Create IndexAgent and test indexing
 print("\n[Test 2] Testing IndexAgent...")
 try:
-    workspace_path = Path("..").resolve()
+    # Use Path(__file__).parent.parent to get workspace path relative to this test file
+    workspace_path = Path(__file__).parent.parent.resolve()
     index_agent = IndexAgent(workspace_path, index_interval=300, initial_delay=0)
     print(f"✓ IndexAgent created for workspace: {workspace_path}")
     

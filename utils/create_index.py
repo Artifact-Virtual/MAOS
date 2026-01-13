@@ -3,7 +3,9 @@ Index creation utilities for MAOS system.
 Provides file scanning and indexing functionality.
 """
 import os
+import logging
 from pathlib import Path
+from fnmatch import fnmatch
 
 
 def scan_directory(directory, ignore_patterns=None):
@@ -43,8 +45,9 @@ def scan_directory(directory, ignore_patterns=None):
                     'last_modified': stat.st_mtime,
                     'type': _detect_file_type(file)
                 })
-            except Exception as e:
-                # Skip files we can't access
+            except (PermissionError, OSError) as e:
+                # Skip files we can't access (permissions, special files, etc.)
+                logging.debug(f"Skipping file {file_path}: {e}")
                 continue
     
     return files_info
@@ -52,8 +55,6 @@ def scan_directory(directory, ignore_patterns=None):
 
 def _should_ignore(name, patterns):
     """Check if a file or directory should be ignored."""
-    from fnmatch import fnmatch
-    
     for pattern in patterns:
         if fnmatch(name, pattern):
             return True
