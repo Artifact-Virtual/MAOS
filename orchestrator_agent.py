@@ -311,17 +311,32 @@ def start_ollama():
         result = subprocess.run(["ollama", "list"], capture_output=True, text=True)
         if result.returncode == 0:
             print("[Startup] Ollama service is already running.")
-            return
-    except Exception:
-        pass
-    print("[Startup] Starting Ollama service...")
-    # Start Ollama in the background
-    subprocess.Popen(["ollama", "serve"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-    # Wait a few seconds for the service to start
-    time.sleep(3)
+            return True
+    except FileNotFoundError:
+        print("[Startup] Warning: Ollama is not installed.")
+        print("[Startup] AI model features will not be available.")
+        print("[Startup] Install Ollama from: https://ollama.ai/")
+        return False
+    except Exception as e:
+        print(f"[Startup] Error checking Ollama status: {e}")
+        return False
+    
+    try:
+        print("[Startup] Starting Ollama service...")
+        # Start Ollama in the background
+        subprocess.Popen(["ollama", "serve"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        # Wait a few seconds for the service to start
+        time.sleep(3)
+        return True
+    except Exception as e:
+        print(f"[Startup] Failed to start Ollama: {e}")
+        return False
 
 if __name__ == "__main__":
-    start_ollama()
+    ollama_available = start_ollama()
+    if not ollama_available:
+        print("[Startup] Warning: Continuing without Ollama. AI features will be limited.")
+    
     logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
     
     # Create orchestrator with 60-second intervals and 5-second initial delay

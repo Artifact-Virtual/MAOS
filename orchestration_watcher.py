@@ -11,12 +11,23 @@ def start_ollama():
         result = subprocess.run(["ollama", "list"], capture_output=True, text=True)
         if result.returncode == 0:
             print("[Watcher] Ollama service is already running.")
-            return
-    except Exception:
-        pass
-    print("[Watcher] Starting Ollama service...")
-    subprocess.Popen(["ollama", "serve"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-    time.sleep(3)
+            return True
+    except FileNotFoundError:
+        print("[Watcher] Warning: Ollama is not installed.")
+        print("[Watcher] Install from: https://ollama.ai/")
+        return False
+    except Exception as e:
+        print(f"[Watcher] Error checking Ollama: {e}")
+        return False
+    
+    try:
+        print("[Watcher] Starting Ollama service...")
+        subprocess.Popen(["ollama", "serve"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        time.sleep(3)
+        return True
+    except Exception as e:
+        print(f"[Watcher] Failed to start Ollama: {e}")
+        return False
 
 # Directory to watch (absolute path, always points to terminal_1 root)
 WATCH_DIR = os.path.abspath(os.path.dirname(__file__))
@@ -63,7 +74,10 @@ class OrchestratorTriggerHandler(FileSystemEventHandler):
         )
 
 if __name__ == "__main__":
-    start_ollama()
+    ollama_available = start_ollama()
+    if not ollama_available:
+        print("[Watcher] Warning: Continuing without Ollama.")
+    
     event_handler = OrchestratorTriggerHandler()
     observer = Observer()
     observer.schedule(event_handler, WATCH_DIR, recursive=True)

@@ -14,15 +14,24 @@ for parent in current.parents:
     if (parent / 'requirements.txt').exists():
         workspace_root = parent
         break
+
+# If no requirements.txt found, use the directory containing this file as fallback
 if workspace_root is None:
-    raise RuntimeError('Could not find workspace root (requirements.txt)')
+    workspace_root = current.parent
+    logging.warning(f'Could not find requirements.txt, using {workspace_root} as workspace root')
 
 utils_path = str(workspace_root / 'utils')
 if utils_path not in sys.path:
     sys.path.insert(0, utils_path)
 
-create_index = import_module('create_index')
-scan_directory = create_index.scan_directory
+# Try to import scan_directory, but it's not strictly required
+try:
+    create_index = import_module('create_index')
+    scan_directory = create_index.scan_directory
+except (ImportError, AttributeError):
+    # scan_directory is not used in current implementation, so this is OK
+    scan_directory = None
+    logging.debug('create_index module not available, using built-in scanning')
 
 # Global ignore patterns (like .gitignore)
 IGNORE_PATTERNS = [

@@ -1,0 +1,9 @@
+# MAOS - Multi-Agent Orchestration System
+# Core dependencies
+
+# File system monitoring for orchestration_watcher.py
+watchdog>=3.0.0
+
+# Note: This system is designed to work with Ollama
+# Ollama must be installed separately from: https://ollama.ai/
+# Models required: qwen3, codegeex4, gemma3, llava
