@@ -50,6 +50,14 @@ backup_*
 .coverage
 htmlcov/
 
+# Reports (industry-grade outputs)
+reports/
+*_sarif_*.json
+*_iso25010_*.json
+*_statistics_*.json
+*_summary_*.json
+*.sarif
+
 # Auto-generated documentation (optional - uncomment if you don't want to track it)
 # docs/README_AUTO.md
 # charts/

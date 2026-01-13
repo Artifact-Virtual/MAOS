@@ -16,6 +16,14 @@ Base Index is a high-performance code indexing and analysis platform designed fo
 - **Zero external dependencies** - Uses only Python stdlib
 - **High performance** - 1,000-10,000 files/second throughput
 
+### Industry-Grade Reporting 🆕
+- **SARIF reports** - Static Analysis Results Interchange Format v2.1.0
+- **ISO/IEC compliance** - ISO 25010 Quality, ISO 5055 Maintainability
+- **Quality metrics** - Modularity, Reusability, Analyzability, Testability
+- **Data science exports** - CSV, JSON Lines, statistical summaries
+- **Standards compliant** - OWASP, CWE, international quality standards
+- **Enterprise ready** - Compatible with GitHub Security, Azure DevOps, GitLab
+
 ### Visual Intelligence
 - **Beautiful Angular UI** - Modern, responsive dashboard
 - **Multiple view modes** - Grid, Tree, and Heatmap visualizations
@@ -26,7 +34,7 @@ Base Index is a high-performance code indexing and analysis platform designed fo
 ### Developer Experience
 - **3-line integration** - Easy to add to any automation
 - **CLI support** - Can run standalone from command line
-- **Export capabilities** - JSON and CSV export formats
+- **Export capabilities** - JSON, CSV, JSON Lines, SARIF formats
 - **Persistent caching** - Instant recovery with auto-save/load
 - **Content hashing** - SHA256 for accurate change detection
 
@@ -119,11 +127,97 @@ python base_index.py /path/to/codebase
 # With options
 python base_index.py /path/to/codebase -w 8 -o index.json -v
 
+# Generate industry-grade reports (SARIF, ISO compliance, etc.)
+python base_index.py /path/to/codebase -r ./reports
+
 # Options:
-#   -w, --workers N    Number of parallel workers (default: 4)
-#   -o, --output FILE  Export to JSON file
-#   -v, --verbose      Verbose logging
+#   -w, --workers N      Number of parallel workers (default: 4)
+#   -o, --output FILE    Export to JSON file
+#   -r, --reports DIR    Generate industry-grade reports to directory
+#   -v, --verbose        Verbose logging
 ```
+
+### Industry-Grade Reporting
+
+Base Index includes enterprise-level reporting capabilities that comply with international standards:
+
+**Generate all reports:**
+```bash
+python base_index.py /path/to/codebase --reports ./reports
+```
+
+**Or use the reporting module directly:**
+```python
+from base_index import BaseIndexer
+from base_index_reporting import BaseIndexReporter
+
+# Index codebase
+indexer = BaseIndexer("/path/to/code")
+stats = indexer.index()
+
+# Convert to report format
+file_entries = [
+    {
+        'path': entry.path,
+        'size': entry.size,
+        'type': entry.type,
+        'loc': entry.loc,
+        'hash': entry.hash
+    }
+    for entry in indexer._index.values()
+]
+
+# Generate all reports
+reporter = BaseIndexReporter()
+reports = reporter.generate_all_reports(stats, file_entries, "./reports")
+
+# Reports generated:
+#   - SARIF (Static Analysis Results Interchange Format v2.1.0)
+#   - ISO/IEC 25010 Quality Compliance Report
+#   - ISO/IEC 5055 Maintainability Metrics
+#   - Statistical Analysis Summary
+#   - CSV Data Export
+#   - JSON Lines Export
+```
+
+**Report Types:**
+
+1. **SARIF Report** (`base_index_sarif_*.json`)
+   - Industry standard for static analysis results
+   - Compatible with GitHub Advanced Security, Azure DevOps, GitLab
+   - Includes maintainability findings and complexity warnings
+   - Maps to CWE (Common Weakness Enumeration)
+
+2. **ISO/IEC 25010 Compliance** (`base_index_iso25010_*.json`)
+   - Software quality characteristics assessment
+   - Maintainability score (0-100) with grade (A-F)
+   - Sub-characteristics: Modularity, Reusability, Analyzability, Modifiability, Testability
+   - Compliance level determination
+   - Actionable recommendations
+
+3. **Statistical Summary** (`base_index_statistics_*.json`)
+   - Descriptive statistics (mean, median, std dev)
+   - File size distributions
+   - Lines of code (LOC) analysis
+   - Size and LOC buckets
+   - Quality metrics
+
+4. **Data Exports**
+   - **CSV** (`base_index_data_*.csv`) - For Excel, data analysis tools
+   - **JSON Lines** (`base_index_data_*.jsonl`) - For big data processing, streaming
+
+5. **Summary Report** (`base_index_summary_*.json`)
+   - Overview of all generated reports
+   - Key metrics and compliance scores
+   - Quick reference for stakeholders
+
+**Standards Compliance:**
+- ✅ **SARIF 2.1.0** (OASIS Standard)
+- ✅ **ISO/IEC 5055:2021** - Software Quality Measurement
+- ✅ **ISO/IEC 25010:2011** - Software Product Quality Model
+- ✅ **ISO/IEC 25023:2016** - Quality Measurement
+- ✅ **OWASP** - Mapping to security standards
+- ✅ **CWE** - Common Weakness Enumeration
 
 ### Angular UI
 

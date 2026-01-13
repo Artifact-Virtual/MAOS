@@ -435,6 +435,7 @@ def main():
     parser.add_argument('directory', help='Directory to index')
     parser.add_argument('-w', '--workers', type=int, default=4, help='Number of workers')
     parser.add_argument('-o', '--output', help='Export to JSON file')
+    parser.add_argument('-r', '--reports', help='Generate industry-grade reports (SARIF, ISO) to directory')
     parser.add_argument('-v', '--verbose', action='store_true', help='Verbose logging')
     
     args = parser.parse_args()
@@ -462,6 +463,37 @@ def main():
     if args.output:
         indexer.export_json(args.output)
         print(f"Exported to: {args.output}")
+    
+    if args.reports:
+        try:
+            from base_index_reporting import BaseIndexReporter
+            
+            # Convert file entries to dict format
+            file_entries = []
+            for entry in indexer._index.values():
+                file_entries.append({
+                    'path': entry.path,
+                    'size': entry.size,
+                    'type': entry.type,
+                    'loc': entry.loc,
+                    'hash': entry.hash
+                })
+            
+            print("\n" + "="*60)
+            print("GENERATING INDUSTRY-GRADE REPORTS")
+            print("="*60)
+            
+            reporter = BaseIndexReporter()
+            report_paths = reporter.generate_all_reports(stats, file_entries, args.reports)
+            
+            print("\n✅ Reports generated:\n")
+            for report_type, path in report_paths.items():
+                print(f"  {report_type:20} → {path}")
+            print("="*60)
+        except ImportError:
+            print("\n⚠️  Reporting module not found. Install base_index_reporting.py")
+        except Exception as e:
+            print(f"\n❌ Error generating reports: {e}")
 
 
 if __name__ == '__main__':
