@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Test and demonstration of the Enhanced MAOS Indexing System.
+Test and demonstration of the Enhanced Base Index Indexing System.
 
 This script validates the enhanced indexer and demonstrates its capabilities.
 """
@@ -17,15 +17,15 @@ logging.basicConfig(
 )
 
 print("="*70)
-print("MAOS ENHANCED INDEXING SYSTEM - TEST & DEMONSTRATION")
+print("Base Index ENHANCED INDEXING SYSTEM - TEST & DEMONSTRATION")
 print("="*70)
 print()
 
 # Test 1: Import the enhanced indexer
 print("[Test 1] Importing enhanced indexer...")
 try:
-    from maos_indexer import MAOSIndexer, ScheduledMAOSIndexer
-    print("✓ Successfully imported MAOSIndexer and ScheduledMAOSIndexer")
+    from base_index import BaseIndexer, ScheduledBaseIndexer
+    print("✓ Successfully imported BaseIndexer and ScheduledBaseIndexer")
 except ImportError as e:
     print(f"✗ Failed to import: {e}")
     sys.exit(1)
@@ -36,7 +36,7 @@ try:
     # Use parent directory as test subject
     test_dir = Path(__file__).parent.parent.resolve()
     
-    indexer = MAOSIndexer(
+    indexer = BaseIndexer(
         root_dir=str(test_dir),
         workers=4,
         chunk_size=500,
@@ -140,7 +140,7 @@ except Exception as e:
 # Test 7: Scheduled indexing
 print("\n[Test 7] Testing scheduled indexing...")
 try:
-    scheduled = ScheduledMAOSIndexer(
+    scheduled = ScheduledBaseIndexer(
         root_dir=str(test_dir),
         interval=5,  # 5 seconds for testing
         workers=2
@@ -200,8 +200,8 @@ print()
 print("The enhanced indexing system is ready for production use!")
 print()
 print("Next steps:")
-print("  1. Use MAOSIndexer for one-time indexing")
-print("  2. Use ScheduledMAOSIndexer for background monitoring")
+print("  1. Use BaseIndexer for one-time indexing")
+print("  2. Use ScheduledBaseIndexer for background monitoring")
 print("  3. Integrate with your automation pipelines")
 print("  4. See ENHANCED_INDEXING_DOCS.md for detailed documentation")
 print()

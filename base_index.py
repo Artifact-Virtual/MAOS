@@ -1,5 +1,5 @@
 """
-MAOS Enhanced Indexing Module - Standalone, Production-Ready
+Base Index Enhanced Indexing Module - Standalone, Production-Ready
 
 A compact, high-performance indexing module designed for:
 - Extremely large codebases (millions of files)
@@ -18,15 +18,15 @@ Features:
 ✓ Export capabilities (JSON, CSV)
 
 Usage:
-    from maos_indexer import MAOSIndexer
+    from base_index import BaseIndexer
     
-    indexer = MAOSIndexer("/path/to/codebase")
+    indexer = BaseIndexer("/path/to/codebase")
     stats = indexer.index()
     print(f"Indexed {stats['total_files']} files in {stats['index_duration']:.2f}s")
 """
 
 __version__ = "2.0.0"
-__author__ = "MAOS Team"
+__author__ = "Base Index Team"
 
 import os
 import hashlib
@@ -64,7 +64,7 @@ class FileEntry:
 # Main Indexer Class
 # ============================================================================
 
-class MAOSIndexer:
+class BaseIndexer:
     """
     Standalone, production-grade code indexer.
     
@@ -134,7 +134,7 @@ class MAOSIndexer:
             'duration': 0,
         }
         
-        self.logger = logging.getLogger('MAOSIndexer')
+        self.logger = logging.getLogger('BaseIndexer')
         self._load_cache()
     
     def _should_ignore(self, path: Path) -> bool:
@@ -372,12 +372,12 @@ class MAOSIndexer:
 # Scheduled Indexer (for background operation)
 # ============================================================================
 
-class ScheduledMAOSIndexer(MAOSIndexer):
+class ScheduledBaseIndexer(BaseIndexer):
     """
     Indexer with automatic scheduled updates.
     
     Usage:
-        indexer = ScheduledMAOSIndexer("/path/to/code", interval=300)
+        indexer = ScheduledBaseIndexer("/path/to/code", interval=300)
         indexer.start()
         # ... indexer runs in background ...
         indexer.stop()
@@ -388,7 +388,7 @@ class ScheduledMAOSIndexer(MAOSIndexer):
         Args:
             root_dir: Root directory
             interval: Seconds between index updates
-            **kwargs: Additional args for MAOSIndexer
+            **kwargs: Additional args for BaseIndexer
         """
         super().__init__(root_dir, **kwargs)
         self.interval = interval
@@ -431,7 +431,7 @@ def main():
     """Command-line interface."""
     import argparse
     
-    parser = argparse.ArgumentParser(description="MAOS Indexer - Index large codebases")
+    parser = argparse.ArgumentParser(description="Base Index Indexer - Index large codebases")
     parser.add_argument('directory', help='Directory to index')
     parser.add_argument('-w', '--workers', type=int, default=4, help='Number of workers')
     parser.add_argument('-o', '--output', help='Export to JSON file')
@@ -444,7 +444,7 @@ def main():
         format='%(asctime)s - %(name)s - %(message)s'
     )
     
-    indexer = MAOSIndexer(args.directory, workers=args.workers)
+    indexer = BaseIndexer(args.directory, workers=args.workers)
     stats = indexer.index()
     
     print("\n" + "="*60)

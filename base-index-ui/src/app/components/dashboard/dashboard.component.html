@@ -1,0 +1,105 @@
+<div class="dashboard">
+  <!-- Stats Overview -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon files">📁</div>
+      <div class="stat-content">
+        <h3>{{stats.totalFiles | number}}</h3>
+        <p>Total Files</p>
+      </div>
+    </div>
+    
+    <div class="stat-card">
+      <div class="stat-icon size">💾</div>
+      <div class="stat-content">
+        <h3>{{getSizeInMB()}} MB</h3>
+        <p>Total Size</p>
+      </div>
+    </div>
+    
+    <div class="stat-card">
+      <div class="stat-icon code">💻</div>
+      <div class="stat-content">
+        <h3>{{stats.totalLOC | number}}</h3>
+        <p>Lines of Code</p>
+      </div>
+    </div>
+    
+    <div class="stat-card">
+      <div class="stat-icon types">🎨</div>
+      <div class="stat-content">
+        <h3>{{getFileTypeKeys().length}}</h3>
+        <p>File Types</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- View Controls -->
+  <div class="view-controls">
+    <h2>Code Analysis</h2>
+    <div class="button-group">
+      <button [class.active]="viewMode === 'grid'" (click)="changeView('grid')">
+        Grid View
+      </button>
+      <button [class.active]="viewMode === 'tree'" (click)="changeView('tree')">
+        Tree View
+      </button>
+      <button [class.active]="viewMode === 'heatmap'" (click)="changeView('heatmap')">
+        Heatmap
+      </button>
+    </div>
+  </div>
+
+  <!-- File Type Distribution -->
+  <div class="section-card">
+    <h3>File Type Distribution</h3>
+    <div class="file-types">
+      <div *ngFor="let type of getFileTypeKeys()" class="file-type-item">
+        <div class="file-type-bar">
+          <div class="file-type-fill" 
+               [style.width.%]="(stats.fileTypes[type] / stats.totalFiles) * 100"
+               [style.background-color]="getFileTypeColor(type)"></div>
+        </div>
+        <div class="file-type-label">
+          <span class="type-name">{{type}}</span>
+          <span class="type-count">{{stats.fileTypes[type]}}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Complexity Heatmap -->
+  <div class="section-card">
+    <h3>Complexity Analysis <span class="subtitle">Color-coded by complexity level</span></h3>
+    <div class="complexity-legend">
+      <span class="legend-item low">● Low (&lt;40)</span>
+      <span class="legend-item medium">● Medium (40-69)</span>
+      <span class="legend-item high">● High (≥70)</span>
+    </div>
+    <div class="complexity-grid">
+      <div *ngFor="let file of complexityData" class="complexity-card" [class]="file.color">
+        <div class="complexity-header">
+          <span class="file-path">{{file.path}}</span>
+          <span class="complexity-score" [class]="getComplexityClass(file.complexity)">
+            {{file.complexity}}
+          </span>
+        </div>
+        <div class="complexity-details">
+          <span>{{file.loc}} LOC</span>
+          <div class="complexity-bar">
+            <div class="complexity-fill" 
+                 [style.width.%]="file.complexity"
+                 [class]="getComplexityClass(file.complexity)"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Action Panel -->
+  <div class="action-panel">
+    <button class="action-btn primary">🔄 Refresh Index</button>
+    <button class="action-btn">📊 Export Data</button>
+    <button class="action-btn">⚙️ Configure</button>
+  </div>
+</div>
